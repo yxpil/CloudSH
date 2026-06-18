@@ -6,257 +6,136 @@
 <title>CloudSH — 云 SSH 中继</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: #000;
-  color: #c0c0c0;
-  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-  line-height: 1.6;
-  min-height: 100vh;
-}
-a { color: #8b949e; text-decoration: none; }
-a:hover { color: #ccc; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#8b949e;font-family:'SF Mono','Fira Code','Consolas',monospace;line-height:1.6;min-height:100vh}
+a{color:#8b949e;text-decoration:none;transition:color .2s}
+a:hover{color:#e8e8e8}
 
-.header {
-  border-bottom: 1px solid #222;
-  padding: 20px 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.logo {
-  font-size: 20px;
-  font-weight: bold;
-  color: #e0e0e0;
-}
-.logo span { color: #555; font-weight: normal; }
-.nav a {
-  margin-left: 24px;
-  font-size: 14px;
-}
+header{border-bottom:1px solid #1a1a1a;padding:16px 24px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:18px;font-weight:700;color:#e0e0e0}
+.logo span{color:#444;font-weight:400;margin-left:8px}
+.nav a{margin-left:20px;font-size:13px}
 
-.hero {
-  padding: 60px 32px 40px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-.hero h1 {
-  font-size: 28px;
-  color: #e8e8e8;
-  margin-bottom: 8px;
-}
-.hero .tagline {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 24px;
-}
-.hero p {
-  color: #999;
-  font-size: 14px;
-  max-width: 600px;
-}
+.hero{max-width:720px;margin:48px auto 32px;padding:0 24px}
+.hero h1{font-size:26px;color:#e8e8e8;margin-bottom:8px}
+.hero p{font-size:13px;color:#666;max-width:520px;margin-bottom:20px}
 
-.flow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 0;
-  font-size: 13px;
-  color: #888;
-  flex-wrap: wrap;
-}
-.flow .box {
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 6px;
-  padding: 12px 16px;
-  text-align: center;
-  min-width: 100px;
-}
-.flow .box .icon { font-size: 20px; margin-bottom: 4px; }
-.flow .arrow { font-size: 18px; color: #444; }
-.flow .label { color: #666; font-size: 11px; margin-top: 4px; }
+.flow{display:flex;align-items:center;gap:10px;font-size:12px;color:#555;flex-wrap:wrap;margin:24px 0}
+.flow .b{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px 14px;text-align:center;min-width:90px}
+.flow .b .icon{font-size:18px;margin-bottom:2px;color:#444}
+.flow .b .label{color:#555;font-size:10px;margin-top:2px}
+.flow .arr{font-size:16px;color:#333}
 
-.section {
-  max-width: 800px;
-  margin: 0 auto 40px;
-  padding: 0 32px;
-}
-.section h2 {
-  font-size: 16px;
-  color: #ddd;
-  border-bottom: 1px solid #222;
-  padding-bottom: 8px;
-  margin-bottom: 16px;
-}
-.section h2 i { color: #555; margin-right: 8px; }
+section{max-width:720px;margin:0 auto 36px;padding:0 24px}
+section h2{font-size:15px;color:#ccc;border-bottom:1px solid #1a1a1a;padding-bottom:6px;margin-bottom:14px}
+section h2 i{color:#333;margin-right:8px}
 
-.card {
-  background: #0a0a0a;
-  border: 1px solid #1a1a1a;
-  border-radius: 6px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-}
-.card .title {
-  font-size: 14px;
-  color: #ccc;
-  margin-bottom: 4px;
-}
-.card .desc {
-  font-size: 12px;
-  color: #777;
-}
+.card{background:#0a0a0a;border:1px solid #151515;border-radius:4px;padding:12px 16px;margin-bottom:10px}
+.card .t{font-size:13px;color:#bbb;margin-bottom:2px}
+.card .d{font-size:11px;color:#555}
 
-code {
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-size: 12px;
-  color: #aaa;
-}
-pre {
-  background: #0a0a0a;
-  border: 1px solid #1a1a1a;
-  border-radius: 6px;
-  padding: 16px 20px;
-  overflow-x: auto;
-  font-size: 12px;
-  color: #999;
-  margin: 8px 0;
-}
-pre .cmd { color: #6cf; }
-pre .out { color: #666; }
+pre{position:relative;background:#0a0a0a;border:1px solid #151515;border-radius:4px;padding:14px 48px 14px 16px;overflow-x:auto;font-size:12px;color:#999;margin:6px 0 14px;white-space:pre-wrap;word-break:break-all}
+pre .c{color:#6cf}
+pre .o{color:#555}
+pre .copy{position:absolute;top:10px;right:10px;background:none;border:1px solid #222;color:#555;border-radius:3px;padding:3px 8px;cursor:pointer;font-size:11px;transition:all .2s}
+pre .copy:hover{color:#ccc;border-color:#444}
+pre .copy.copied{color:#4a4;border-color:#363}
 
-.footer {
-  border-top: 1px solid #222;
-  padding: 20px 32px;
-  font-size: 12px;
-  color: #555;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.footer a { margin: 0 8px; }
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.dl-btn{display:block;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:10px 14px;text-align:center;font-size:12px;transition:all .2s}
+.dl-btn:hover{border-color:#333;color:#ccc}
+.dl-btn .name{color:#bbb;font-size:13px}
+.dl-btn .meta{color:#555;font-size:10px;margin-top:2px}
+
+footer{border-top:1px solid #1a1a1a;padding:16px 24px;font-size:11px;color:#444;text-align:center;margin-top:40px}
+footer a{margin:0 6px}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">CloudSH <span>云 SSH 中继</span></div>
-  <div class="nav">
-    <a href="#quickstart"><i class="fa-solid fa-rocket"></i> 快速开始</a>
-    <a href="#install"><i class="fa-solid fa-download"></i> 安装</a>
-    <a href="https://github.com/yxpil/CloudSH"><i class="fa-brands fa-github"></i> GitHub</a>
-  </div>
-</div>
+<header>
+<div class="logo">CloudSH <span>云 SSH 中继 / Cloud Relay</span></div>
+<nav class="nav">
+<a href="#quickstart"><i class="fa-solid fa-rocket"></i> 快速开始</a>
+<a href="#download"><i class="fa-solid fa-download"></i> 下载</a>
+<a href="#install"><i class="fa-solid fa-terminal"></i> 安装</a>
+<a href="https://github.com/yxpil/CloudSH"><i class="fa-brands fa-github"></i> GitHub</a>
+</nav>
+</header>
 
 <div class="hero">
-  <h1>CloudSH</h1>
-  <div class="tagline">被控主机无需公网 IP，无需开放端口，通过云中继转发纯文本命令。</div>
-  <p>一个 HTTP API 驱动的 SSH 替代方案——Agent 主动外连，穿透任意防火墙。适合管理内网机器、IoT 设备、临时 VPS。</p>
-
-  <div class="flow">
-    <div class="box">
-      <div class="icon"><i class="fa-solid fa-user"></i></div>
-      <div>你</div>
-      <div class="label">cloudsh exec</div>
-    </div>
-    <div class="arrow">→</div>
-    <div class="box">
-      <div class="icon"><i class="fa-solid fa-cloud"></i></div>
-      <div>云 VPS</div>
-      <div class="label">Server :8080</div>
-    </div>
-    <div class="arrow">←</div>
-    <div class="box">
-      <div class="icon"><i class="fa-solid fa-server"></i></div>
-      <div>被控主机</div>
-      <div class="label">Agent 轮询</div>
-    </div>
-  </div>
+<h1>无需公网 IP，无需开放端口</h1>
+<p>被控主机通过 Agent 主动连接云中继，你从任意网络发送命令，纯文本转发，穿透一切防火墙。</p>
+<div class="flow">
+<div class="b"><div class="icon"><i class="fa-solid fa-user"></i></div>你 / User<div class="label">cloudsh exec</div></div>
+<div class="arr">→</div>
+<div class="b"><div class="icon"><i class="fa-solid fa-cloud"></i></div>云中继 / Relay<div class="label">HTTP :3000</div></div>
+<div class="arr">←</div>
+<div class="b"><div class="icon"><i class="fa-solid fa-server"></i></div>被控主机 / Host<div class="label">Agent 轮询</div></div>
+</div>
 </div>
 
-<div class="section" id="quickstart">
-  <h2><i class="fa-solid fa-bolt"></i> 快速开始</h2>
+<section id="download">
+<h2><i class="fa-solid fa-download"></i> 下载客户端 / Download</h2>
+<div class="dl-grid">
+<a class="dl-btn" href="/bin/cloudsh-darwin-arm64"><div class="name"><i class="fa-brands fa-apple"></i> macOS ARM64</div><div class="meta">cloudsh · 3.8 MB</div></a>
+<a class="dl-btn" href="/bin/cloudsh-agent-darwin-arm64"><div class="name"><i class="fa-brands fa-apple"></i> Agent ARM64</div><div class="meta">cloudsh-agent · 3.4 MB</div></a>
+</div>
+<p style="font-size:11px;color:#444;margin-top:8px">下载后 <code>chmod +x cloudsh* && mv cloudsh* /usr/local/bin/</code></p>
+</section>
 
-  <div class="card">
-    <div class="title">1. 云 VPS 启动 Server</div>
-    <div class="desc">零依赖，单个 2MB 二进制</div>
-  </div>
-  <pre><span class="cmd">$</span> CLOUDSH_PORT=8080 cloudsh-server</pre>
+<section id="quickstart">
+<h2><i class="fa-solid fa-bolt"></i> 快速开始 / Quick Start</h2>
 
-  <div class="card">
-    <div class="title">2. 本地注册获取凭证</div>
-  </div>
-  <pre><span class="cmd">$</span> cloudsh -s http://VPS_IP:8080 register
-<span class="out">client_id:  a1b2c3d4
-password:   xxxxxxxxxxxxxxxx</span></pre>
+<div class="card"><div class="t">1. 部署 Server（你只需要一个 node server.js）</div></div>
+<pre><span class="c">$</span> curl -fsSL https://cloudsh.yxpil.com/install.sh | bash<span class="copy" onclick="copy(this)">复制</span></pre>
 
-  <div class="card">
-    <div class="title">3. 被控主机启动 Agent</div>
-  </div>
-  <pre><span class="cmd">$</span> CLOUDSH_SERVER=http://VPS_IP:8080 \
-  CLOUDSH_CLIENT_ID=a1b2c3d4 \
+<div class="card"><div class="t">2. 注册获取凭证 / Register</div></div>
+<pre><span class="c">$</span> cloudsh -s http://YOUR_VPS:3000 register<span class="copy" onclick="copy(this)">复制</span></pre>
+
+<div class="card"><div class="t">3. 被控主机启动 Agent</div></div>
+<pre><span class="c">$</span> curl -fsSL https://cloudsh.yxpil.com/bin/cloudsh-agent-darwin-arm64 -o cloudsh-agent
+<span class="c">$</span> chmod +x cloudsh-agent
+<span class="c">$</span> CLOUDSH_SERVER=http://YOUR_VPS:3000 \
+  CLOUDSH_CLIENT_ID=xxx \
   CLOUDSH_PASSWORD=*** \
-  cloudsh-agent</pre>
+  ./cloudsh-agent<span class="copy" onclick="copy(this)">复制</span></pre>
 
-  <div class="card">
-    <div class="title">4. 执行命令</div>
-  </div>
-  <pre><span class="cmd">$</span> cloudsh -s http://VPS_IP:8080 exec whoami
-<span class="out">root</span>
-<span class="cmd">$</span> cloudsh -s http://VPS_IP:8080 exec "ls -la /var/log"</pre>
-</div>
+<div class="card"><div class="t">4. 执行命令 / Exec</div></div>
+<pre><span class="c">$</span> cloudsh -s http://YOUR_VPS:3000 exec whoami<span class="copy" onclick="copy(this)">复制</span>
+<span class="c">$</span> cloudsh -s http://YOUR_VPS:3000 exec "df -h"</pre>
+</section>
 
-<div class="section" id="install">
-  <h2><i class="fa-solid fa-download"></i> 安装</h2>
+<section id="install">
+<h2><i class="fa-solid fa-terminal"></i> 一键安装 / One-Line Install</h2>
+<pre><span class="c">$</span> curl -fsSL https://cloudsh.yxpil.com/install.sh | bash<span class="copy" onclick="copy(this)">复制</span></pre>
+<p style="font-size:11px;color:#555;margin-top:6px">自动安装 Rust → 下载源码 → 编译 → systemd 服务。或指定组件：<code>... | bash -s server</code></p>
+</section>
 
-  <div class="card">
-    <div class="title">一键编译 + systemd 服务</div>
-    <div class="desc">需要 Rust 1.80+，脚本自动安装</div>
-  </div>
-  <pre><span class="cmd">$</span> git clone https://github.com/yxpil/CloudSH
-<span class="cmd">$</span> cd CloudSH
-<span class="cmd">$</span> bash install.sh          <span class="out"># 全编译</span>
-<span class="cmd">$</span> bash install.sh server   <span class="out"># 或仅 Server</span>
-<span class="cmd">$</span> bash install.sh agent    <span class="out"># 或仅 Agent</span>
-<span class="cmd">$</span> bash install.sh client   <span class="out"># 或仅 Client</span></pre>
+<section>
+<h2><i class="fa-solid fa-shield-halved"></i> 安全 / Security</h2>
+<div class="card"><div class="t">纯文本转发</div><div class="d">拒绝二进制和控制字符（\x00 \x1b），只过纯文本命令</div></div>
+<div class="card"><div class="t">常量时间密码比较</div><div class="d">timingSafeEqual 防时序攻击</div></div>
+<div class="card"><div class="t">无 SSH 凭证存储</div><div class="d">Server 不存目标机密码，Agent 本地执行</div></div>
+</section>
 
-  <div class="card">
-    <div class="title">systemd 自动启动</div>
-  </div>
-  <pre><span class="cmd">$</span> sudo systemctl enable --now cloudsh-server
-<span class="cmd">$</span> sudo systemctl enable --now cloudsh-agent   <span class="out"># 先编辑凭证</span></pre>
-</div>
+<footer>
+<a href="https://github.com/yxpil/CloudSH"><i class="fa-brands fa-github"></i> yxpil/CloudSH</a>
+<span style="color:#333">|</span>
+<span>MIT</span>
+<span style="color:#333">|</span>
+<a href="mailto:sapni@yxpil.com"><i class="fa-solid fa-envelope"></i></a>
+</footer>
 
-<div class="section">
-  <h2><i class="fa-solid fa-shield-halved"></i> 安全</h2>
-  <div class="card">
-    <div class="title">纯文本转发</div>
-    <div class="desc">拒绝二进制和控制字符（\x00 \x1b），只过纯文本命令</div>
-  </div>
-  <div class="card">
-    <div class="title">常量时间密码比较</div>
-    <div class="desc">防时序攻击，密码长度泄露也无用</div>
-  </div>
-  <div class="card">
-    <div class="title">无 SSH 凭证存储</div>
-    <div class="desc">Server 不存目标机 SSH 密码，Agent 本地执行</div>
-  </div>
-</div>
-
-<div class="footer">
-  <div>
-    <a href="https://github.com/yxpil/CloudSH"><i class="fa-brands fa-github"></i> yxpil/CloudSH</a>
-  </div>
-  <div>
-    <span>MIT License</span>
-    <a href="mailto:sapni@yxpil.com"><i class="fa-solid fa-envelope"></i></a>
-  </div>
-</div>
-
+<script>
+function copy(btn){
+  const pre=btn.parentElement;
+  const text=Array.from(pre.childNodes).filter(n=>n.nodeType===3||(n.nodeType===1&&!n.classList.contains('copy'))).map(n=>n.textContent).join('').replace(/\n{2,}/g,'\n').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='已复制';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='复制';btn.classList.remove('copied')},1500);
+  });
+}
+</script>
 </body>
 </html>
