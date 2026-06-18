@@ -4,3 +4,4 @@ Cargo.lock
 .idea/
 *.d
 bin/
+node_modules/
