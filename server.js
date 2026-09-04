@@ -1,0 +1,75 @@
+const express = require('express');
+const crypto = require('crypto');
+const path = require('path');
+
+const app = express();
+app.use(express.json());
+const PORT = process.env.PORT || 3000;
+
+const agents = new Map();
+const commands = new Map();
+const waiters = new Map();
+function now(){return Math.floor(Date.now()/1000)}
+function genId(){return crypto.randomBytes(4).toString('hex')}
+function genPw(){return crypto.randomBytes(12).toString('base64url')}
+function verify(a,b){return a.length===b.length&&crypto.timingSafeEqual(Buffer.from(a),Buffer.from(b))}
+
+app.post('/register',(_req,res)=>{
+  const cid=genId(),pw=genPw();
+  agents.set(cid,{password:pw,online:false,last_seen:now()});
+  commands.set(cid,[]);
+  res.json({client_id:cid,password:pw});
+});
+
+app.post('/agent/poll',(req,res)=>{
+  const{client_id,password}=req.body;
+  const a=agents.get(client_id);
+  if(!a||!verify(password,a.password))return res.status(401).json({error:'auth'});
+  a.online=true;a.last_seen=now();
+  const q=commands.get(client_id)||[];
+  const cmd=q.shift();
+  res.json(cmd?{command:cmd}:{command:null});
+});
+
+app.post('/agent/result',(req,res)=>{
+  const{client_id,password,command_id,stdout,stderr,exit_code}=req.body;
+  const a=agents.get(client_id);
+  if(!a||!verify(password,a.password))return res.status(401).json({error:'auth'});
+  const resolve=waiters.get(command_id);
+  if(resolve){waiters.delete(command_id);resolve({stdout,stderr,exit_code})}
+  res.json({status:'ok'});
+});
+
+app.post('/exec',async(req,res)=>{
+  const{client_id,password,command}=req.body;
+  const a=agents.get(client_id);
+  if(!a||!verify(password,a.password))return res.status(401).json({error:'auth'});
+  if(!a.online)return res.status(503).json({error:'agent offline'});
+  if(/[\x00\x1b]/.test(command))return res.status(400).json({error:'binary rejected'});
+  const command_id=crypto.randomUUID();
+  const q=commands.get(client_id)||[];
+  q.push({command_id,command});
+  commands.set(client_id,q);
+  const result=await new Promise((resolve,reject)=>{
+    waiters.set(command_id,resolve);
+    setTimeout(()=>{waiters.delete(command_id);reject(new Error('timeout'))},30000);
+  });
+  res.json(result);
+});
+
+// Raw .sh/.bat download — bypass 1panel syntax highlighting
+app.get('/sh/:file',(req,res)=>{
+  const f=path.join(__dirname,'public/sh',req.params.file);
+  res.set('Content-Type','text/plain');res.sendFile(f);
+});
+
+app.use(express.static(path.join(__dirname,'public'),{
+  setHeaders(res,fp){
+    if(fp.endsWith('.sh')||fp.endsWith('.bat')){
+      res.set('Content-Type','application/octet-stream');
+      res.set('X-Content-Type-Options','nosniff');
+    }
+  }
+}));
+
+app.listen(PORT,()=>console.log(`CloudSH → http://localhost:${PORT}`));
