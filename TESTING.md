@@ -1,4 +1,10 @@
 # CloudSH 测试说明
+- 测试完成：是（2026-10-04）
+- 测试日期：2026-10-04
+- 测试内容：单元 5（Server 密码生成/常量时间校验 3、Agent execute_command 2）；集成 5（Server HTTP 鉴权/过滤、Agent --help、Client 3 个 CLI 冒烟）；注入 2（错误密码/未知 client_id→401、NUL/ANSI ESC 控制符命令→400）；钩子 0（无插件注册表；请求→上线→执行→结果链路按序验证）。
+- 运行命令：cd Server; cargo test；cd Agent; cargo test；cd Client; cargo test
+- 测试框架：Rust #[cfg(test)] + tests/ 集成测试
+- 模型：豆包（Doubao）生成
 
 CloudSH 是三 crate 工程（无根 Cargo.toml，各自独立 `cargo test`）：
 
