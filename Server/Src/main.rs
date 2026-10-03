@@ -345,3 +345,43 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn generated_password_is_16_safe_chars_and_unique() {
+        let p1 = generate_password();
+        let p2 = generate_password();
+        assert_eq!(p1.len(), 16);
+        assert_eq!(p2.len(), 16);
+        assert_ne!(p1, p2);
+        // 只允许安全字符集（无易混淆 0/O/1/l）
+        let allowed = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+        assert!(p1.chars().all(|c| allowed.contains(c)));
+    }
+
+    #[test]
+    fn verify_password_accepts_exact_rejects_others() {
+        let stored = "correct-horse-battery";
+        assert!(verify_password(stored, stored));
+        // 错误密码
+        assert!(!verify_password("wrong", stored));
+        // 长度不同直接拒（防时序短路差异）
+        assert!(!verify_password("correct-horse-battery-extra", stored));
+        assert!(!verify_password("", stored));
+        // 仅差一位也拒（注入/爆破单字符不通过）
+        let mut flipped = stored.to_string();
+        flipped.pop();
+        flipped.push(if stored.ends_with('y') { 'z' } else { 'y' });
+        assert!(!verify_password(&flipped, stored));
+    }
+
+    #[test]
+    fn now_secs_is_reasonable_unix_time() {
+        let t = now_secs();
+        // 2024-01-01 之后
+        assert!(t > 1_700_000_000);
+    }
+}

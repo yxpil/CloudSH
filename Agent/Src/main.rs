@@ -240,3 +240,22 @@ async fn main() {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn execute_simple_echo_returns_stdout() {
+        let (stdout, _stderr, code) = execute_command("echo cloudsh-works");
+        assert_eq!(code, 0);
+        assert!(stdout.contains("cloudsh-works"), "stdout: {stdout}");
+    }
+
+    #[test]
+    fn execute_unknown_command_nonzero_exit() {
+        // 一个几乎不可能存在的命令名
+        let (_stdout, _stderr, code) = execute_command("cloudsh_nonexistent_cmd_zzz_999");
+        assert_ne!(code, 0, "不存在的命令应非零退出");
+    }
+}
