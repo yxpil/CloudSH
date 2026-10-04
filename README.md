@@ -167,3 +167,15 @@ sudo systemctl enable --now cloudsh-agent
 ## License
 
 MIT
+
+---
+
+<div align="center">
+
+<a href="https://github.com/yxpil/CloudSH">
+  <img width="100%" src="https://alittlecatgirlpanel.yxp.hk/card?repo=yxpil/CloudSH" alt="gh-card · yxpil/CloudSH" />
+</a>
+
+<sub>Powered by <a href="https://alittlecatgirlpanel.yxp.hk"><b>gh-card</b></a> · 粉色手写体 README 仓库名片</sub>
+
+</div>
