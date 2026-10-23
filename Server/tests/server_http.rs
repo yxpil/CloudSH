@@ -68,7 +68,7 @@ fn post(path: &str, body: &str) -> (u16, String) {
 fn wait_up() {
     let deadline = Instant::now() + Duration::from_secs(10);
     while Instant::now() < deadline {
-        if post("/register", "{}").0 != 0 {
+        if TcpStream::connect(("127.0.0.1", PORT)).is_ok() {
             return;
         }
         std::thread::sleep(Duration::from_millis(200));
